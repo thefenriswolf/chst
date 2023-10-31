@@ -1,3 +1,18 @@
 #+title: chst - charta store
 #+author: Stefan Rohrbacher
 #+language: english
+#+auto_tangle:nil
+
+~chst~ is a personal project and as such is designed to fulfil my needs.
+That being said, ~chst~ is a [[https://en.wikipedia.org/wiki/Document-oriented_database][document store]] tool based on [[https://www.sqlite.org/index.html][sqlite]]. I am well aware there are projects that already do that, but for my needs they have too many features. I just want to have a database file in my ~/user/home/~ and a tool that can store documents inside and retrieve them when needed.
+Of course I don't want to waste space so they get compressed before being committed to the database.
+
+* Quick Start
+#+begin_src shell
+go build
+./chst --file=exampledoc.pdf --tags=tax,2022,fhwn
+#+end_src
+
+* License
+Copyright 2023 Stefan Rohrbacher.
+Distributed under the [[https://github.com/thefenriswolf/chst/blob/main/LICENSE][MIT License]].
