@@ -1,0 +1,3 @@
+#+title: chst - charta store
+#+author: Stefan Rohrbacher
+#+language: english
