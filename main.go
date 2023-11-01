@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"compress/zlib"
 	"database/sql"
+	"flag"
 	"fmt"
 	_ "github.com/glebarez/go-sqlite"
 	"io"
@@ -13,6 +14,21 @@ import (
 // TODO: organize code into functions
 
 func main() {
+	var srcFile string
+	var srcFileTags string
+	var mode string
+	var dbFile string
+	var helpFlag string
+	var versionNo string = "0.0.1"
+
+	flag.StringVar(&mode, "m", "input", "Use chst in 'input' or 'output' mode")
+	flag.StringVar(&srcFile, "f", "sampledoc.pdf", "Specify input-/output file for chst to target")
+	flag.StringVar(&srcFileTags, "t", "", "Tags associated with the document.\nSeparate multiple tags by comma ','")
+	flag.StringVar(&dbFile, "db", "chst.db", "OPTIONAL\nDatabase file for chst to use")
+	flag.StringVar(&helpFlag, "h", "", "This help menu")
+	flag.StringVar(&versionNo, "v", "", "OPTIONAL\nDatabase file for chst to use")
+	flag.Parse()
+
 	// connect
 	// TODO: switch to on disk database when file loading is implemented
 	db, err := sql.Open("sqlite", ":memory:") // test with temp db
