@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"compress/zlib"
 	"database/sql"
+	"errors"
 	"flag"
 	"fmt"
 	_ "github.com/glebarez/go-sqlite"
@@ -11,7 +12,27 @@ import (
 	"log"
 )
 
-// TODO: organize code into functions
+func archive(input []byte, mode byte) ([]byte, error) {
+	var buffer bytes.Buffer
+	if mode == 0 {
+		writer := zlib.NewWriter(&buffer)
+		writer.Write(input)
+		writer.Close()
+		return []byte(buffer.Bytes()), nil
+
+	} else if mode == 1 {
+		reader, err := zlib.NewReader(bytes.NewBuffer(input))
+		if err != nil {
+			log.Fatal(err)
+		}
+		io.Copy(&buffer, reader)
+		out := []byte(buffer.Bytes())
+		return out, nil
+	} else {
+		msg := fmt.Sprintf("invalid operating mode specified: %d", mode)
+		return input, errors.New(msg)
+	}
+}
 
 func main() {
 	var srcFile string
@@ -41,26 +62,18 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	content := "hello world"
-	fmt.Println(content)
-
-	var cbuffer bytes.Buffer
-	var rbuffer bytes.Buffer
-
-	writer := zlib.NewWriter(&cbuffer)
-	defer writer.Close()
-
-	reader, err := zlib.NewReader(&cbuffer)
+	content := "hello world hello world"
+	compress, err := archive([]byte(content), 0)
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer reader.Close()
-	//TODO: research how to properly use reader
-	writer.Write([]byte(content))
-	fmt.Println(cbuffer.String())
+	deflate, err := archive(compress, 1)
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	io.Copy(&rbuffer, reader)
-	fmt.Println(rbuffer.String())
+	fmt.Println("input: ", []byte(content))
+	fmt.Println("compressed: ", compress)
+	fmt.Println("uncompressed", deflate)
 
 }
