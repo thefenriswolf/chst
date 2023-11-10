@@ -34,20 +34,24 @@ func archive(input []byte, mode byte) ([]byte, error) {
 	}
 }
 
+func helpUsage(version string) {
+	fmt.Println("-m\n-f\n-t\n-db\nchst version: ", version)
+}
+
 func main() {
 	var srcFile string
 	var srcFileTags string
 	var mode string
 	var dbFile string
-	var helpFlag string
-	var versionNo string = "0.0.1"
+	const versionNo string = "0.0.1"
 
 	flag.StringVar(&mode, "m", "input", "Use chst in 'input' or 'output' mode")
 	flag.StringVar(&srcFile, "f", "sampledoc.pdf", "Specify input-/output file for chst to target")
 	flag.StringVar(&srcFileTags, "t", "", "Tags associated with the document.\nSeparate multiple tags by comma ','")
 	flag.StringVar(&dbFile, "db", "chst.db", "OPTIONAL\nDatabase file for chst to use")
-	flag.StringVar(&helpFlag, "h", "", "This help menu")
-	flag.StringVar(&versionNo, "v", "", "OPTIONAL\nDatabase file for chst to use")
+	flag.Usage = func() {
+		helpUsage(versionNo)
+	}
 	flag.Parse()
 
 	// connect
